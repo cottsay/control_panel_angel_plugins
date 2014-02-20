@@ -1,0 +1,7 @@
+<library path="lib/libcpangel_controller">
+  <class type="control_panel::CPAngelControllerPlugin" base_class_type="control_panel::ControlPanelPlugin">
+    <description>
+      Angel Controller#trajectory_msgs/JointTrajectory#Creates JointTrajectory messages based on Twist messages
+    </description>
+  </class>
+</library>
