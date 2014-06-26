@@ -15,8 +15,10 @@ CPAngelControllerPlugin::CPAngelControllerPlugin() :
     nodelet_priv(new angel_controller::angel_controller_nodelet(false))
 {
     ui->setupUi(this);
-    ui->label->setText("CP Angel Controller");
-    ui->label->setEnabled(false);
+    connect(this, SIGNAL(changeLabel(const QString &)), ui->label, SLOT(setText(const QString &)));
+    connect(this, SIGNAL(changeEnabled(bool)), ui->label, SLOT(setEnabled(bool)));
+    emit changeLabel("CP Angel Controller");
+    emit changeEnabled(false);
 }
 
 CPAngelControllerPlugin::~CPAngelControllerPlugin()
@@ -33,19 +35,19 @@ void CPAngelControllerPlugin::start()
     }
     settings->setValue(uuid.toString() + "/Active", true);
     nodelet_priv->start();
-    ui->label->setEnabled(true);
+    emit changeEnabled(true);
 }
 
 void CPAngelControllerPlugin::stop()
 {
-    ui->label->setEnabled(false);
+    emit changeEnabled(false);
     nodelet_priv->stop();
     settings->setValue(uuid.toString() + "/Active", false);
 }
 
 void CPAngelControllerPlugin::setup()
 {
-    ui->label->setText(settings->value(uuid.toString() + "/Label", ui->label->text()).toString());
+    emit changeLabel(settings->value(uuid.toString() + "/Label", ui->label->text()).toString());
     if(settings->value(uuid.toString() + "/Active", false).toBool())
         start();
 }
@@ -99,7 +101,7 @@ void CPAngelControllerPlugin::configDialog()
 
     if(ui->label->text() != labeledit->text())
     {
-        ui->label->setText(labeledit->text());
+        emit changeLabel(labeledit->text());
         settings->setValue(uuid.toString() + "/Label", labeledit->text());
     }
 }
